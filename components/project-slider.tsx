@@ -16,7 +16,7 @@ type ProjectSliderProps = {
   assetPrefix?: string;
 };
 
-export function ProjectSlider({ title, pages, assetPrefix = "https://alikansoh-architecture.alikanso725.chatgpt.site/assets/portfolio/page" }: ProjectSliderProps) {
+export function ProjectSlider({ title, pages, assetPrefix = "/assets/portfolio/page" }: ProjectSliderProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 

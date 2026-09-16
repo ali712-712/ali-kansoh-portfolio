@@ -16,8 +16,6 @@ export type Project = {
 const range = (start: number, end: number) =>
   Array.from({ length: end - start + 1 }, (_, index) => start + index);
 
-const hostedAssets = "https://alikansoh-architecture.alikanso725.chatgpt.site/assets";
-
 export const portfolioProjects: Project[] = [
   {
     slug: "beneath-and-beyond",
@@ -27,8 +25,8 @@ export const portfolioProjects: Project[] = [
     year: "2026",
     type: "Master's Thesis · Urban Regeneration",
     tools: "Rhino · Grasshopper · Ladybug · Karamba 3D · Adobe CC",
-    cover: `${hostedAssets}/master/master-01.jpg`,
-    assetPrefix: `${hostedAssets}/master/master`,
+    cover: "/assets/master/master-01.jpg",
+    assetPrefix: "/assets/master/master",
     pages: range(1, 25),
     thesis: true,
     description: "A vision for Beirut Port that responds to trauma, displacement and collective memory through spatial intelligence and human empathy. Layered slabs, protected inner worlds, public bridges, timber structures and planted levels rebuild not only the site, but relationships between the city, its ecology and its people.",
