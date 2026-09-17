@@ -37,6 +37,13 @@ async function assetResponse(request) {
 const env = { ASSETS: { fetch: assetResponse } };
 const ctx = { waitUntil() {}, passThroughOnException() {} };
 
+async function sendResponse(req, res, response) {
+  res.statusCode = response.status;
+  response.headers.forEach((value, key) => res.setHeader(key, value));
+  if (req.method === "HEAD") return res.end();
+  res.end(Buffer.from(await response.arrayBuffer()));
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     const protocol = req.headers["x-forwarded-proto"] || "http";
@@ -44,13 +51,12 @@ const server = http.createServer(async (req, res) => {
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
     const body = chunks.length ? Buffer.concat(chunks) : undefined;
-    const response = await worker.fetch(new Request(`${protocol}://${host}${req.url || "/"}`, {
+    const request = new Request(`${protocol}://${host}${req.url || "/"}`, {
       method: req.method, headers: req.headers, body, duplex: body ? "half" : undefined,
-    }), env, ctx);
-    res.statusCode = response.status;
-    response.headers.forEach((value, key) => res.setHeader(key, value));
-    if (req.method === "HEAD") return res.end();
-    res.end(Buffer.from(await response.arrayBuffer()));
+    });
+    const asset = await assetResponse(request);
+    if (asset.status !== 404) return await sendResponse(req, res, asset);
+    return await sendResponse(req, res, await worker.fetch(request, env, ctx));
   } catch (error) {
     console.error(error);
     res.statusCode = 500;
